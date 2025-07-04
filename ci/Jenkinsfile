@@ -31,10 +31,22 @@ pipeline {
             echo 'Pipeline finished'
         }
         success {
-            echo 'Build Passed!'
-        }
-        failure {
-            echo 'Build Failed!'
-        }
+        echo 'Build Passed!'
+        emailext (
+            to: 'ganesha.prasad1996@gmail.com',
+            subject: "Jenkins Job Success: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
+            body: "Good news!\n\nThe Jenkins job ${env.JOB_NAME} #${env.BUILD_NUMBER} has passed.",
+            attachLog: true
+        )
+    }
+    failure {
+        echo 'Build Failed!'
+        emailext (
+            to: 'ganesha.prasad1996@gmail.com',
+            subject: "Jenkins Job FAILED: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
+            body: "Alert!\n\nThe Jenkins job ${env.JOB_NAME} #${env.BUILD_NUMBER} has failed.",
+            attachLog: true
+        )
+    }
     }
 }
