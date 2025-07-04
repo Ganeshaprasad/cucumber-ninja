@@ -1,0 +1,40 @@
+pipeline {
+    agent any
+
+    tools {
+        maven 'Maven 3.8.6'   // Use your Maven name from Jenkins (Manage Jenkins → Global Tool Config)
+    }
+
+    stages {
+        stage('Checkout Code') {
+            steps {
+                git 'https://github.com/Ganeshaprasad/cucumber-ninja'  // Replace with your repo
+            }
+        }
+
+        stage('Build & Test') {
+            steps {
+                sh 'mvn clean test'
+            }
+        }
+
+        stage('Archive Reports') {
+            steps {
+                archiveArtifacts artifacts: 'target/ExtentReport/*.html', allowEmptyArchive: true
+                junit 'target/surefire-reports/*.xml'
+            }
+        }
+    }
+
+    post {
+        always {
+            echo 'Pipeline finished'
+        }
+        success {
+            echo 'Build Passed!'
+        }
+        failure {
+            echo 'Build Failed!'
+        }
+    }
+}
